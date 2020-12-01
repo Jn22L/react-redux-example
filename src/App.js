@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import allActions from "./actions";
+import BoardList from "./components/BoardList";
 
-function App() {
+const App = () => {
+  const counter = useSelector((state) => state.counter);
+  const currentUser = useSelector((state) => state.currentUser);
+  const dispatch = useDispatch();
+
+  const user = { name: "홍길동" };
+
+  useEffect(() => {
+    dispatch(allActions.userActions.setUser(user));
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {currentUser.loggedIn ? (
+        <>
+          <h1>환영합니다. {currentUser.user.name}</h1>
+          <button onClick={() => dispatch(allActions.userActions.logOut())}>
+            Logout
+          </button>
+        </>
+      ) : (
+        <>
+          <h1>Login</h1>
+          <button
+            onClick={() => dispatch(allActions.userActions.setUser(user))}
+          >
+            Login as 홍길동
+          </button>
+        </>
+      )}
+      <h1>Counter: {counter}</h1>
+      <button onClick={() => dispatch(allActions.counterActions.increment())}>
+        Increase Counter
+      </button>
+      <button onClick={() => dispatch(allActions.counterActions.decrement())}>
+        Decrease Counter
+      </button>
+      <BoardList />
     </div>
   );
-}
+};
 
 export default App;
